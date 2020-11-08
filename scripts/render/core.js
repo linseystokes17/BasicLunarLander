@@ -8,6 +8,11 @@ LunarLander.graphics = (function() {
         context.clearRect(0, 0, canvas.width, canvas.height);
     }
 
+    function label(speed, angle){
+        context.fillText("Speed.x: " + speed.x, 0,10);
+        context.fillText("Speed.y: " + -speed.y, 0,20);
+        context.fillText("Angle: " + (angle%6), 0,30);
+    }
     // --------------------------------------------------------------
     //
     // Draws a texture to the canvas with the following specification:
@@ -38,7 +43,8 @@ LunarLander.graphics = (function() {
     let api = {
         get canvas() { return canvas; },
         clear: clear,
-        drawTexture: drawTexture
+        drawTexture: drawTexture,
+        label: label,
     };
 
     return api;
