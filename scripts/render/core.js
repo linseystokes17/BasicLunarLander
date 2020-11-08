@@ -9,10 +9,44 @@ LunarLander.graphics = (function() {
     }
 
     function label(speed, angle){
-        context.fillText("Speed.x: " + speed.x, 0,10);
-        context.fillText("Speed.y: " + -speed.y, 0,20);
-        context.fillText("Angle: " + (angle%6), 0,30);
+        let angleMax = .15;
+        let speedMax = -1
+        context.font = '20px Calibri';
+        let inc = 20;
+
+        if (-speed.y >= speedMax){
+            context.fillStyle = 'green';
+            context.fillText("Speed.y: " + -speed.y, 0, inc*2);
+        }
+        else if (-speed.y < speedMax){
+            context.fillStyle = 'red';
+            context.fillText("Speed.y: " + -speed.y, 0, inc*2);
+        }
+        context.fillStyle = 'white';
+        context.fillText("Speed.x: " + speed.x, 0, inc);
+        if (Math.abs(angle) <= angleMax){
+            context.fillStyle = 'green';
+            context.fillText("Angle: " + (angle%6), 0, inc*3);
+        }
+        else if ( Math.abs(angle) > angleMax){
+            context.fillStyle = 'red';
+            context.fillText("Angle: " + (angle%6), 0, inc*3);
+        }
     }
+
+
+    function drawTerrain(points, len){
+        context.beginPath()
+        for (var i=0; i < len-1; i++){
+            var start = points[i];
+            var end = points[i+1];
+            context.moveTo(start.x, start.y);
+            context.lineTo(end.x, end.y);
+            context.lineWidth = 2;
+            context.stroke();
+        }
+    }
+
     // --------------------------------------------------------------
     //
     // Draws a texture to the canvas with the following specification:
@@ -45,6 +79,7 @@ LunarLander.graphics = (function() {
         clear: clear,
         drawTexture: drawTexture,
         label: label,
+        drawTerrain: drawTerrain,
     };
 
     return api;

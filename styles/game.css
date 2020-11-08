@@ -9,7 +9,9 @@ body {
     height: 1000px;
     border-style: solid;
     border-width: 1px;
-    background-color: rgb(239,239,251);
+    background-image: url("../assets/background.jfif");
+    background-repeat: no-repeat;
+    background-size: cover;
     font-size: 40px;
 }
 
@@ -31,23 +33,23 @@ body {
 
 ul.menu {
     text-align: center;
-    padding: 0;
+    padding: 1em;
     margin: 0;
     list-style: none;
 }
 
 ul.menu li {
-    margin: 0.8em 0;
+    margin: 1em 0;
 }
 
 ul.menu li button {
     font-family: Arial, sans-serif;
-    font-size: 0.6em;
+    font-size: 0.8em;
     color: #CECEF6;
     width: 10em;
     height: 1.5em;
-    background: #0404B4;
-    border: 0.1em solid rgb(255, 0, 0);
+    background: #151552;
+    border: 0.1em solid rgb(90, 11, 57);
     border-radius: 0.5em;
     box-shadow: 0.2em 0.2em 0.3em rgb(0, 0, 0);
 }

@@ -3,40 +3,24 @@ LunarLander.screens['game-play'] = (function(game, objects, renderer, graphics, 
 
     let lastTimeStamp = performance.now();
     let cancelNextRequest = true;
-    let randStartY = graphics.canvas.height - Math.floor(Math.random()*graphics.canvas.height/2);
-    let randSafeX = Math.round(graphics.canvas.width*.15) + Math.floor(Math.random()*(graphics.canvas.width-2*Math.round(graphics.canvas.width*.15)));
-    let randSafeY = graphics.canvas.height - Math.floor(Math.random()*graphics.canvas.height/2);
-
-
     let myKeyboard = input.Keyboard();
 
     let myLander = objects.Lander({
         imageSrc: 'assets/lander.png',
-        center: { x: graphics.canvas.width / 2, y: graphics.canvas.height / 2 },
+        center: { x: graphics.canvas.width / 2, y: 100 },
         size: { width: 30, height: 60 },
         speed: {x: 0, y: 0},
         angle: 0
     });
 
     let myTerrain = objects.Terrain({
-        bumpiness: .4,
+        bumpiness: .5,
         safeZoneWidth: 100,
-        startPoint: {
-            x: 0,
-            y: randStartY,
-        },
-        endPoint: {
-            x: graphics.canvas.width,
-            y: randStartY
-        },
-        safeZoneStart: {
-            x: randSafeX,
-            y: randSafeY 
-        },
-        safeZoneEnd: {
-            x: randSafeX + 100,
-            y: randSafeY
-        },
+        pointsLen: 0,
+        points: [],
+        canv: {
+            height: graphics.canvas.height, 
+            width:graphics.canvas.width},
     });
 
     function processInput(elapsedTime) {
@@ -51,6 +35,7 @@ LunarLander.screens['game-play'] = (function(game, objects, renderer, graphics, 
         graphics.clear();
         renderer.Lander.render(myLander);
         graphics.label(myLander.speed, myLander.angle);
+        renderer.Terrain.render(myTerrain);
     }
 
     function gameLoop(time) {
@@ -92,6 +77,7 @@ LunarLander.screens['game-play'] = (function(game, objects, renderer, graphics, 
         lastTimeStamp = performance.now();
         cancelNextRequest = false;
         requestAnimationFrame(gameLoop);
+        
     }
 
     return {
