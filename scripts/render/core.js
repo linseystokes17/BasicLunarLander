@@ -20,7 +20,6 @@ LunarLander.graphics = (function() {
         context.save();
 
         center.x += speed.x;
-        console.log("center.x in core.js: " +String(center.x));
         center.y += speed.y;
 
         context.translate(center.x, center.y);

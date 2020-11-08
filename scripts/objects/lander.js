@@ -27,9 +27,6 @@ LunarLander.objects.Lander = function(spec) {
     let imageReady = false;
     let image = new Image();
     
-
-
-
     image.onload = function() {
         imageReady = true;
     };
@@ -47,12 +44,6 @@ LunarLander.objects.Lander = function(spec) {
         if (acceleration < maxAccel){
             acceleration += .0025;
         }
-        // spec.speed.x = velocity.x + acceleration*Math.sin((angle*Math.PI));
-        // spec.speed.y = velocity.y - acceleration*Math.cos((angle*Math.PI)/180);
-        
-        // velocity.x = spec.speed.x;
-        // velocity.y = spec.speed.y;
-
     }
 
     function moveTo() {
@@ -60,16 +51,11 @@ LunarLander.objects.Lander = function(spec) {
         if(acceleration >= minAccel){
             acceleration -= gravity;
         }
-        console.log("angle: " + String(angle));
         spec.speed.x = velocity.x + acceleration*Math.sin(angle);
         spec.speed.y = velocity.y - acceleration*Math.cos(angle);
-        console.log("speed.x in objects/lander.js: " +String(spec.speed.x));
-        console.log("speed.y in objects/lander.js: " +String(spec.speed.y));
-        
+
         velocity.x = spec.speed.x;
         velocity.y = spec.speed.y;
-        console.log("velocity.x in objects/lander.js: " +String(velocity.x));
-        console.log("velocity.y in objects/lander.js: " +String(velocity.y));
     }
 
     function updatePosition(){
