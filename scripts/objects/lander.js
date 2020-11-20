@@ -15,7 +15,7 @@ LunarLander.objects.Lander = function(spec) {
     'use strict';
 
     let massEarth = 5.97*Math.pow(10, 18);
-    let massShip = 225; //kg
+    let massShip = 200; //kg
     let gravConst = 6.67*Math.pow(10, -11);
     let radEarth = 6378000 //m
     let shipDistCenter =  radEarth + spec.center.y;

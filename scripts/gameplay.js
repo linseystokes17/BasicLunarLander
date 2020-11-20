@@ -8,7 +8,7 @@ LunarLander.screens['game-play'] = (function(game, objects, renderer, graphics, 
     let myLander = objects.Lander({
         imageSrc: 'assets/lander.png',
         center: { x: graphics.canvas.width / 2, y: 100 },
-        size: { width: 30, height: 60 },
+        size: { width: 15, height: 30 },
         speed: {x: 0, y: 0},
         angle: 0
     });
