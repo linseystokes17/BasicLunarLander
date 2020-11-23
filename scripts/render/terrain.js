@@ -9,13 +9,11 @@
 // }
 //
 // --------------------------------------------------------------
-LunarLander.render.Lander = (function(graphics) {
+LunarLander.render.Terrain = (function(graphics) {
     'use strict';
 
     function render(spec) {
-        if (spec.imageReady) {
-            graphics.drawTexture(spec.image, spec.center, spec.angle, spec.size, spec.speed, spec.reset);
-        }
+        graphics.drawTerrain(spec.points, spec.pointsLen);
     }
 
     return {

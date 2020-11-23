@@ -8,6 +8,45 @@ LunarLander.graphics = (function() {
         context.clearRect(0, 0, canvas.width, canvas.height);
     }
 
+    function label(speed, angle){
+        let angleMax = .15;
+        let speedMax = -1
+        context.font = '20px Calibri';
+        let inc = 20;
+
+        if (-speed.y >= speedMax){
+            context.fillStyle = 'green';
+            context.fillText("Speed.y: " + -speed.y, 0, inc*2);
+        }
+        else if (-speed.y < speedMax){
+            context.fillStyle = 'red';
+            context.fillText("Speed.y: " + -speed.y, 0, inc*2);
+        }
+        context.fillStyle = 'white';
+        context.fillText("Speed.x: " + speed.x, 0, inc);
+        if (Math.abs(angle) <= angleMax){
+            context.fillStyle = 'green';
+            context.fillText("Angle: " + (angle%6), 0, inc*3);
+        }
+        else if ( Math.abs(angle) > angleMax){
+            context.fillStyle = 'red';
+            context.fillText("Angle: " + (angle%6), 0, inc*3);
+        }
+    }
+
+
+    function drawTerrain(points, len){
+        context.beginPath()
+        for (var i=0; i < len-1; i++){
+            var start = points[i];
+            var end = points[i+1];
+            context.moveTo(start.x, start.y);
+            context.lineTo(end.x, end.y);
+            context.lineWidth = 2;
+            context.stroke();
+        }
+    }
+
     // --------------------------------------------------------------
     //
     // Draws a texture to the canvas with the following specification:
@@ -20,7 +59,6 @@ LunarLander.graphics = (function() {
         context.save();
 
         center.x += speed.x;
-        console.log("center.x in core.js: " +String(center.x));
         center.y += speed.y;
 
         context.translate(center.x, center.y);
@@ -39,7 +77,9 @@ LunarLander.graphics = (function() {
     let api = {
         get canvas() { return canvas; },
         clear: clear,
-        drawTexture: drawTexture
+        drawTexture: drawTexture,
+        label: label,
+        drawTerrain: drawTerrain,
     };
 
     return api;
