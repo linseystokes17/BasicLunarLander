@@ -9,7 +9,7 @@ LunarLander.screens['game-play'] = (function(game, objects, renderer, graphics, 
         imageSrc: 'assets/lander.png',
         center: { x: graphics.canvas.width / 2, y: 100 },
         size: { width: 15, height: 30 },
-        speed: {x: 0, y: 0},
+        velocity: {x: 0, y: 0, magnitude:0},
         angle: 90
     });
 
@@ -41,13 +41,13 @@ LunarLander.screens['game-play'] = (function(game, objects, renderer, graphics, 
                 game.showScreen('main-menu');
             }
         }
-        myLander.updatePosition();
+        myLander.updatePosition(elapsedTime);
     }
 
     function render() {
         graphics.clear();
         renderer.Lander.render(myLander);
-        graphics.label(myLander.speed, myLander.angle);
+        graphics.label(myLander.velocity, myLander.angle);
         renderer.Terrain.render(myTerrain);
     }
 
@@ -66,7 +66,7 @@ LunarLander.screens['game-play'] = (function(game, objects, renderer, graphics, 
 
     function initialize() {
         myTerrain.initialize();
-        myKeyboard.register('w', myLander.accelerate);
+        myKeyboard.register('w', myLander.thrust);
         myKeyboard.register('a', myLander.rotateLeft);
         myKeyboard.register('d', myLander.rotateRight);
         myKeyboard.register('Escape', function() {

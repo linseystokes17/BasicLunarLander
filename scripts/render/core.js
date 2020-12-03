@@ -8,30 +8,35 @@ LunarLander.graphics = (function() {
         context.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    function label(speed, angle){
+    function label(velocity, angle){
         let angleMax = 355;
         let angleMin = 5;
-        let speedMax = 3
+        let velocityMax = 20
         context.font = '20px Calibri';
         let inc = 20;
+        let ang = angle%360;
 
-        if (Math.abs(Math.round(speed.y*10)) >= speedMax){
+        let vel = Math.abs(Math.round(velocity.magnitude*10))
+        if (ang < 0){
+            ang = 359 + ang;
+        }
+
+        if (vel >= velocityMax){
             context.fillStyle = 'white';
-            context.fillText("Speed.y: " + Math.abs(Math.round(speed.y*10)), 0, inc*2);
+            context.fillText("velocity.y: " + vel, 0, inc*2);
         }
-        else if (Math.abs(Math.round(speed.y*10)) < speedMax){
+        else if (vel <= velocityMax){
             context.fillStyle = 'green';
-            context.fillText("Speed.y: " + Math.abs(Math.round(speed.y*10)), 0, inc*2);
+            context.fillText("velocity.y: " + vel, 0, inc*2);
         }
-        context.fillStyle = 'white';
-        context.fillText("Speed.x: " + speed.x, 0, inc);
-        if (Math.abs(angle) <= angleMax){
+        
+        if (ang  >= angleMax || ang <= angleMin){
             context.fillStyle = 'green';
-            context.fillText("Angle: " + (angle), 0, inc*3);
+            context.fillText("Angle: " + ang , 0, inc*3);
         }
-        else if ( Math.abs(angle) > angleMax){
+        else{
             context.fillStyle = 'white';
-            context.fillText("Angle: " + (angle), 0, inc*3);
+            context.fillText("Angle: " + ang, 0, inc*3);
         }
     }
 
@@ -56,14 +61,14 @@ LunarLander.graphics = (function() {
     //    size: { width: , height: }
     //
     // --------------------------------------------------------------
-    function drawTexture(image, center, angle, size, speed) {
+    function drawTexture(image, center, size, velocity) {
         context.save();
 
-        center.x += speed.x;
-        center.y += speed.y;
+        // center.x += velocity.x;
+        // center.y += velocity.y;
 
         context.translate(center.x, center.y);
-        context.rotate(angle);
+        context.rotate((velocity.direction*Math.PI)/180);
         context.translate(-center.x, -center.y);
 
         context.drawImage(

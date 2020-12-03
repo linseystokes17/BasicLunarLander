@@ -27,7 +27,6 @@ LunarLander.objects.Terrain = function(spec) {
                 y: randSafeY
             },
         };
-        console.log(spec.canv.height);
         points.push(terrain.startPoint, terrain.endPoint, terrain.safeZoneStart, terrain.safeZoneEnd);
         genTerrain(terrain.startPoint, terrain.safeZoneStart, spec.bumpiness, depth);
         genTerrain(terrain.safeZoneEnd, terrain.endPoint,  spec.bumpiness, depth);
