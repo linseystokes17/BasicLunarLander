@@ -5,9 +5,9 @@ LunarLander.objects.Terrain = function(spec) {
     let gauss = randGauss(10);
 
     function initialize(){
-        let randStartY = spec.canv.height - Math.floor(Math.random()*spec.canv.height/2);
+        let randStartY = spec.canv.height+10 - Math.floor(Math.random()*spec.canv.height/2)-10;
         let randSafeX = Math.round(spec.canv.width*.15) + Math.floor(Math.random()*(spec.canv.width-2*Math.round(spec.canv.width*.15)));
-        let randSafeY = spec.canv.height - Math.floor(Math.random()*spec.canv.height/2);
+        let randSafeY = spec.canv.height+10 - Math.floor(Math.random()*spec.canv.height/2)-10;
         points = [];
         let terrain = {
             startPoint: {
@@ -68,6 +68,8 @@ LunarLander.objects.Terrain = function(spec) {
         }
         return r/v;
     }
+
+    
 
     // function printPoints(){
     //     for (var i=0; i<points.length-1; i++){

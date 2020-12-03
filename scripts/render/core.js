@@ -9,28 +9,29 @@ LunarLander.graphics = (function() {
     }
 
     function label(speed, angle){
-        let angleMax = .15;
-        let speedMax = -1
+        let angleMax = 355;
+        let angleMin = 5;
+        let speedMax = 3
         context.font = '20px Calibri';
         let inc = 20;
 
-        if (-speed.y >= speedMax){
-            context.fillStyle = 'green';
-            context.fillText("Speed.y: " + -speed.y, 0, inc*2);
+        if (Math.abs(Math.round(speed.y*10)) >= speedMax){
+            context.fillStyle = 'white';
+            context.fillText("Speed.y: " + Math.abs(Math.round(speed.y*10)), 0, inc*2);
         }
-        else if (-speed.y < speedMax){
-            context.fillStyle = 'red';
-            context.fillText("Speed.y: " + -speed.y, 0, inc*2);
+        else if (Math.abs(Math.round(speed.y*10)) < speedMax){
+            context.fillStyle = 'green';
+            context.fillText("Speed.y: " + Math.abs(Math.round(speed.y*10)), 0, inc*2);
         }
         context.fillStyle = 'white';
         context.fillText("Speed.x: " + speed.x, 0, inc);
         if (Math.abs(angle) <= angleMax){
             context.fillStyle = 'green';
-            context.fillText("Angle: " + (angle%6), 0, inc*3);
+            context.fillText("Angle: " + (angle), 0, inc*3);
         }
         else if ( Math.abs(angle) > angleMax){
-            context.fillStyle = 'red';
-            context.fillText("Angle: " + (angle%6), 0, inc*3);
+            context.fillStyle = 'white';
+            context.fillText("Angle: " + (angle), 0, inc*3);
         }
     }
 
