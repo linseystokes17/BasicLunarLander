@@ -14,7 +14,7 @@ LunarLander.render.Lander = (function(graphics) {
 
     function render(spec) {
         if (spec.imageReady) {
-            graphics.drawTexture(spec.image, spec.center, spec.size, spec.velocity, spec.reset);
+            graphics.drawTexture(spec.image, spec.center, spec.size, spec.degrees, spec.reset);
         }
     }
 

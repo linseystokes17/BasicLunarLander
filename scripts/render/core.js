@@ -8,35 +8,29 @@ LunarLander.graphics = (function() {
         context.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    function label(velocity, angle){
-        let angleMax = 355;
-        let angleMin = 5;
-        let velocityMax = 20
+    function label(speed, degree){
+        let degreeMax = 355;
+        let degreeMin = 5;
+        let speedMax = 20
         context.font = '20px Calibri';
         let inc = 20;
-        let ang = angle%360;
 
-        let vel = Math.abs(Math.round(velocity.magnitude*10))
-        if (ang < 0){
-            ang = 359 + ang;
-        }
-
-        if (vel >= velocityMax){
+        if (speed >= speedMax){
             context.fillStyle = 'white';
-            context.fillText("velocity.y: " + vel, 0, inc*2);
+            context.fillText("speed.y: " + speed, 0, inc*2);
         }
-        else if (vel <= velocityMax){
+        else if (speed <= speedMax){
             context.fillStyle = 'green';
-            context.fillText("velocity.y: " + vel, 0, inc*2);
+            context.fillText("speed.y: " + speed, 0, inc*2);
         }
         
-        if (ang  >= angleMax || ang <= angleMin){
+        if (degree  >= degreeMax || degree <= degreeMin){
             context.fillStyle = 'green';
-            context.fillText("Angle: " + ang , 0, inc*3);
+            context.fillText("degree: " + degree , 0, inc*3);
         }
         else{
             context.fillStyle = 'white';
-            context.fillText("Angle: " + ang, 0, inc*3);
+            context.fillText("degree: " + degree, 0, inc*3);
         }
     }
 
@@ -61,14 +55,14 @@ LunarLander.graphics = (function() {
     //    size: { width: , height: }
     //
     // --------------------------------------------------------------
-    function drawTexture(image, center, size, velocity) {
+    function drawTexture(image, center, size, degrees) {
         context.save();
 
-        // center.x += velocity.x;
-        // center.y += velocity.y;
+        // center.x += speed.x;
+        // center.y += speed.y;
 
         context.translate(center.x, center.y);
-        context.rotate((velocity.direction*Math.PI)/180);
+        context.rotate(degrees* Math.PI / 180);
         context.translate(-center.x, -center.y);
 
         context.drawImage(

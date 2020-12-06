@@ -54,9 +54,6 @@ LunarLander.objects.Terrain = function(spec) {
             genTerrain(start, midpoint, bumpiness,depth); 
             genTerrain(midpoint, end, bumpiness, depth);   
         }
-        // console.log("midpoint.y: " + midpoint.y);
-        // console.log("start.y: " + start.y);
-        // console.log("end.y: " + end.y);
     }
 
 

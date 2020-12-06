@@ -7,7 +7,7 @@
     // center: { x: graphics.canvas.width / 2, y: graphics.canvas.height / 2 },
     // size: { width: 30, height: 60 },
     // speed: {x: 0, y: 0},
-    // angle: 0
+    // degrees: 0
 // }
 //
 // --------------------------------------------------------------
@@ -18,19 +18,8 @@ LunarLander.objects.Lander = function(spec) {
     let imageReady = false;
     let image = new Image();
 
-    //determine gravity
-    let massEarth = 5.97*Math.pow(10, 18);
-    let massShip = 200; //kg
-    let gravConst = 6.67*Math.pow(10, -11);
-    let radEarth = 637800 //m
-    let shipDistCenter =  radEarth + spec.center.y;
-    let gravity = -gravConst*((massShip*massEarth)/Math.pow(shipDistCenter,2));
-    let gravVector = {direction: 180, magnitude: gravity};
-
     //ship movements
-    let velocity = {direction: 90, magnitude:0};
     let radius = 8.5;
-    let thrustVelocity = {direction: 0 , magnitude:0};
 
     // fuel
     let totalFuel = 10;
@@ -43,65 +32,67 @@ LunarLander.objects.Lander = function(spec) {
     image.src = spec.imageSrc;
 
     function rotateLeft(elapsedTime) {
-        if (velocity.direction > 360 || velocity.direction <= 0){
-            velocity.direction=velocity.direction%360;
-        }
-        velocity.direction -= 1;
+        spec.degrees -= 1;
     }
 
     function rotateRight(elapsedTime) {
-        if (velocity.direction > 360 || velocity.direction <= 0){
-            velocity.direction=velocity.direction%360;
-        }
-        velocity.direction += 1;
+        spec.degrees += 1;
     }
 
     function thrust(elapsedTime) {
-        thrustVelocity.magnitude += .000001;
-        thrustVelocity.direction = spec.angle;
-        let forces = calculateVector(thrustVelocity, velocity);
-        
-        spec.center.x += forces.magnitude*Math.cos(forces.direction);
-        spec.center.y -= forces.magnitude*Math.sin(forces.direction);
+        let radians = spec.degrees * Math.PI / 180;
+        let offsetX=Math.cos(spec.degrees);
+        let offsetY=Math.sin(radians);
 
-        velocity.direction += forces.direction;
-        velocity.magnitude += forces.magnitude;
-
-        spec.angle = velocity.direction;
+        spec.momentum.x += offsetX * elapsedTime*spec.accelerationRate;
+        spec.momentum.y += offsetY * elapsedTime*spec.accelerationRate;
         
+        let newSpeed = Math.sqrt(Math.pow(spec.momentum.x, 2) + Math.pow(spec.momentum.y, 2));
+        if (newSpeed > spec.maxSpeed) {
+            //
+            // Modify the vector to keep the magnitude equal to the max possible speed.
+            spec.momentum.x /= (newSpeed / spec.maxSpeed);
+            spec.momentum.y /= (newSpeed / spec.maxSpeed);
+        }
+        let tail = {
+            x: spec.center.x - Math.cos(spec.degrees) * (spec.size.width / 2),
+            y: spec.center.y - Math.sin(spec.degrees) * (spec.size.height / 2)
+        };
+        // LunarLander.components.ParticleSystem.createEffectExhaust({
+        //     center: tail,
+        //     momentum: spec.momentum,
+        //     direction: Math.PI + spec.degrees,
+        //     spread: Math.PI / 3,
+        //     howMany: 5
+        // });
     }
 
     function updatePosition(elapsedTime){
-        let forces = calculateVector(gravVector, velocity);
+        let radians = spec.degrees * Math.PI / 180;
+        let offsetX=Math.sin(radians);
+        let offsetY=Math.cos(radians);
+
+        spec.momentum.x += offsetX * elapsedTime*spec.acceleration;
+        spec.momentum.y += offsetY * elapsedTime*spec.acceleration;
         
-        spec.center.x += forces.magnitude*Math.cos(forces.direction);
-        spec.center.y -= forces.magnitude*Math.sin(forces.direction);
-
-        spec.angle = velocity.direction;
-    }
-
-    function calculateVector(v1, v2){
-        let vector = {direction: 0, magnitude:0}
-
-        let x1 = v1.magnitude*Math.cos(v1.direction);
-        let y1 = v1.magnitude*Math.sin(v1.direction);
-
-        let x2 = v2.magnitude * Math.cos(v2.direction);
-        let y2 = v2.magnitude * Math.sin(v2.direction);
-
-        let vectorx = x1 + x2;
-        let vectory = y1 + y2;
-
-        vector.magnitude = Math.sqrt(Math.pow(vectorx,2)+Math.pow(vectory, 2))
-        vector.angle = Math.atan(vectory / vectorx);
-
-        return vector
+        let newSpeed = Math.sqrt(Math.pow(spec.momentum.x, 2) + Math.pow(spec.momentum.y, 2));
+        if (newSpeed > spec.maxSpeed) {
+            //
+            // Modify the vector to keep the magnitude equal to the max possible speed.
+            spec.momentum.x /= (newSpeed / spec.maxSpeed);
+            spec.momentum.y /= (newSpeed / spec.maxSpeed);
+        }
+        
+        spec.center.x += spec.momentum.x;
+        spec.center.y += spec.momentum.y+spec.gravity;  
+        
+        spec.speed -= spec.gravity;
     }
 
     function reset(){
-        spec.angle = 90;
+        spec.degrees = 90;
         spec.center = { x: 300, y: 100 };
-        velocity = {direction: 90, magnitude: 0};
+        spec.speed = 0;
     }
 
     function getCenter(){
@@ -141,11 +132,11 @@ LunarLander.objects.Lander = function(spec) {
         getCenter: getCenter,
         thrust: thrust,
         get imageReady() { return imageReady; },
-        get angle() { return spec.angle; },
+        get degrees() { return spec.degrees; },
         get image() { return image; },
         get center() { return spec.center; },
         get size() { return spec.size; },
-        get velocity() { return velocity },
+        get speed() {return spec.speed;},
     };
 
     return api;

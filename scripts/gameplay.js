@@ -9,8 +9,14 @@ LunarLander.screens['game-play'] = (function(game, objects, renderer, graphics, 
         imageSrc: 'assets/lander.png',
         center: { x: graphics.canvas.width / 2, y: 100 },
         size: { width: 15, height: 30 },
-        velocity: {x: 0, y: 0, magnitude:0},
-        angle: 90
+        degrees: 90,
+        momentum: { x: 0.0, y: 0.0 },        // World units per millisecond
+        maxSpeed: 0.0004,                    // World units per millisecond
+        accelerationRate: 0.0004 / 1000,    // World units per second
+        rotateRate: Math.PI / 1000,            // Radians per millisecond
+        hitPoints: {
+            max: 10
+        }
     });
 
     let myTerrain = objects.Terrain({
@@ -47,7 +53,7 @@ LunarLander.screens['game-play'] = (function(game, objects, renderer, graphics, 
     function render() {
         graphics.clear();
         renderer.Lander.render(myLander);
-        graphics.label(myLander.velocity, myLander.angle);
+        graphics.label(myLander.speed, myLander.degrees);
         renderer.Terrain.render(myTerrain);
     }
 
@@ -62,6 +68,57 @@ LunarLander.screens['game-play'] = (function(game, objects, renderer, graphics, 
         if (!cancelNextRequest) {
             requestAnimationFrame(gameLoop);
         }
+    }
+
+    // ------------------------------------------------------------------
+    //
+    // Register the various keyboard events we need for the spacemyLander.  While
+    // doing so, collect the handler id's so they can be unregistered at
+    // a later time, such as when the spacemyLander dies.
+    //
+    // ------------------------------------------------------------------
+    function registerSpacemyLanderKeyboard(myLander) {
+        let handlerIds = [];
+        let handlerId;
+
+        handlerId = myKeyboard.registerHandler(function(elapsedTime) {
+            myLander.accelerate(elapsedTime);
+        }, 'w', true);
+        handlerIds.push({ key: 'w', handlerId: handlerId });
+
+        handlerId = myKeyboard.registerHandler(function(elapsedTime) {
+            myLander.rotateLeft(elapsedTime);
+        }, 'a', true);
+        handlerIds.push({ key: 'a', handlerId: handlerId });
+
+        handlerId = myKeyboard.registerHandler(function(elapsedTime) {
+            myLander.rotateRight(elapsedTime);
+        }, 'd', true);
+        handlerIds.push({ key: 'd', handlerId: handlerId });
+
+        handlerId = myKeyboard.registerHandler(function(elapsedTime) {
+            myLander.fire(function(entity, renderer) {
+                friendlyEntities[nextEntityId++] = {
+                    model: entity,
+                    renderer: renderer
+                };
+            });
+        }, ' ', false);
+        handlerIds.push({ key: ' ', handlerId: handlerId });
+
+        //
+        // Register keyboard handlers to cause a thrust sound to occur
+        handlerId = myKeyboard.registerHandlerDown(function() {
+            myLander.startAccelerate();
+        }, 'w');
+        handlerIds.push({ key: 'w', handlerId: handlerId });
+
+        handlerId = myKeyboard.registerHandlerUp(function() {
+            myLander.endAccelerate();
+        }, 'w');
+        handlerIds.push({ key: 'w', handlerId: handlerId });
+
+        return handlerIds;
     }
 
     function initialize() {

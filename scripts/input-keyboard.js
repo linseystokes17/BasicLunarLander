@@ -21,6 +21,7 @@ LunarLander.input.Keyboard = function () {
             }
         }
     };
+    
 
     that.register = function (key, handler) {
         that.handlers[key] = handler;
