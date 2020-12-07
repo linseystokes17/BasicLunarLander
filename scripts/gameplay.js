@@ -11,6 +11,7 @@ LunarLander.screens['game-play'] = (function(game, objects, renderer, graphics, 
         size: { width: 15, height: 30 },
         velocity: {x: 0, y: 0},
         angle: Math.PI/2,
+        thrust: 0,
     });
 
     let myTerrain = objects.Terrain({

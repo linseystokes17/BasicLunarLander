@@ -11,18 +11,18 @@ LunarLander.graphics = (function() {
     function label(velocity, angle){
         let angleMax = 355;
         let angleMin = 5;
-        let speedMax = 3
+        let speedMax = .3
         let degrees = Math.round(((angle* 180/Math.PI)+360)%360);
         context.font = '20px Calibri';
         let inc = 20;
 
-        if (Math.abs(Math.round(velocity.y*10,2)) >= speedMax){
+        if (velocity.y >= speedMax){
             context.fillStyle = 'white';
-            context.fillText("velocity: " + Math.abs(Math.round(velocity.y*10)) + " m/s", 0, inc*2 );
+            context.fillText("velocity: " + velocity.y + " m/s", 0, inc*2 );
         }
-        else if (Math.abs(Math.round(velocity.y*10,2)) < speedMax){
+        else if (velocity.y < speedMax){
             context.fillStyle = 'green';
-            context.fillText("velocity: " + Math.abs(Math.round(velocity.y*10)) + " m/s", 0, inc*2);
+            context.fillText("velocity: " + velocity.y + " m/s", 0, inc*2);
         }
         if (degrees <= angleMin || degrees >= angleMax){
             context.fillStyle = 'green';
