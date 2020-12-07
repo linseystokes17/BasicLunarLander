@@ -9,8 +9,9 @@ LunarLander.screens['game-play'] = (function(game, objects, renderer, graphics, 
         imageSrc: 'assets/lander.png',
         center: { x: graphics.canvas.width / 2, y: 100 },
         size: { width: 15, height: 30 },
-        speed: {x: 0, y: 0},
-        angle: 0
+        velocity: {x: 0, y: 0},
+        angle: Math.PI/2,
+        thrust: 0,
     });
 
     let myTerrain = objects.Terrain({
@@ -28,13 +29,30 @@ LunarLander.screens['game-play'] = (function(game, objects, renderer, graphics, 
     }
 
     function update(elapsedTime) {
+        for (let i = 0; i<myTerrain.points.length-1; i++){
+            if (myLander.lineCircleIntersection(myTerrain.points[i], myTerrain.points[i+1], myLander.getCenter()) == true){
+                if ((myTerrain.points[i].y == myTerrain.points[i+1].y) && (Math.round(((myLander.angle* 180/Math.PI)+360)%360) <= 5 || Math.round(((myLander.angle* 180/Math.PI)+360)%360) >= 355) && (Math.abs(Math.round(myLander.velocity.y*10)) <= 2)){
+                    console.log("Successful landing!");
+                }
+
+                cancelNextRequest = true;
+                myLander.reset();
+                myTerrain.initialize();
+                // myLander.center.x = graphics.canvas.width / 2;
+                // myLander.center.y = graphics.canvas.height / 2;
+                // myLander.angle = 0;
+                //
+                // Then, return to the main menu
+                game.showScreen('main-menu');
+            }
+        }
         myLander.updatePosition();
     }
 
     function render() {
         graphics.clear();
         renderer.Lander.render(myLander);
-        graphics.label(myLander.speed, myLander.angle);
+        graphics.label(myLander.velocity, myLander.angle);
         renderer.Terrain.render(myTerrain);
     }
 
