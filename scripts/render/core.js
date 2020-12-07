@@ -8,30 +8,29 @@ LunarLander.graphics = (function() {
         context.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    function label(speed, angle){
+    function label(velocity, angle){
         let angleMax = 355;
         let angleMin = 5;
         let speedMax = 3
+        let degrees = Math.round(((angle* 180/Math.PI)+360)%360);
         context.font = '20px Calibri';
         let inc = 20;
 
-        if (Math.abs(Math.round(speed.y*10)) >= speedMax){
+        if (Math.abs(Math.round(velocity.y*10,2)) >= speedMax){
             context.fillStyle = 'white';
-            context.fillText("Speed.y: " + Math.abs(Math.round(speed.y*10)), 0, inc*2);
+            context.fillText("velocity: " + Math.abs(Math.round(velocity.y*10)) + " m/s", 0, inc*2 );
         }
-        else if (Math.abs(Math.round(speed.y*10)) < speedMax){
+        else if (Math.abs(Math.round(velocity.y*10,2)) < speedMax){
             context.fillStyle = 'green';
-            context.fillText("Speed.y: " + Math.abs(Math.round(speed.y*10)), 0, inc*2);
+            context.fillText("velocity: " + Math.abs(Math.round(velocity.y*10)) + " m/s", 0, inc*2);
         }
-        context.fillStyle = 'white';
-        context.fillText("Speed.x: " + speed.x, 0, inc);
-        if (Math.abs(angle) <= angleMax){
+        if (degrees <= angleMin || degrees >= angleMax){
             context.fillStyle = 'green';
-            context.fillText("Angle: " + (angle), 0, inc*3);
+            context.fillText("Angle: " + (degrees), 0, inc*3);
         }
-        else if ( Math.abs(angle) > angleMax){
+        else {
             context.fillStyle = 'white';
-            context.fillText("Angle: " + (angle), 0, inc*3);
+            context.fillText("Angle: " + (degrees), 0, inc*3);
         }
     }
 
@@ -56,11 +55,11 @@ LunarLander.graphics = (function() {
     //    size: { width: , height: }
     //
     // --------------------------------------------------------------
-    function drawTexture(image, center, angle, size, speed) {
+    function drawTexture(image, center, angle, size, velocity) {
         context.save();
 
-        center.x += speed.x;
-        center.y += speed.y;
+        center.x += velocity.x;
+        center.y += velocity.y;
 
         context.translate(center.x, center.y);
         context.rotate(angle);

@@ -23,7 +23,7 @@ LunarLander.objects.Lander = function(spec) {
     let maxAccel = .25;
     let minAccel = gravity*2;
     let turnrate = .05;
-    let acceleration = gravity;
+    let acceleration = 0;
     let velocity = {x: 0, y: 0, magnitude:0};
     let imageReady = false;
     let image = new Image();
@@ -36,49 +36,33 @@ LunarLander.objects.Lander = function(spec) {
     image.src = spec.imageSrc;
 
     function rotateLeft(elapsedTime) {
-        spec.angle -= turnrate;
+        spec.angle -= Math.PI / 180;
     }
 
     function rotateRight(elapsedTime) {
-        spec.angle += turnrate;
+        spec.angle += Math.PI/180;
     }
 
     function accelerate(elapsedTime){
-        if (acceleration < maxAccel){
-            acceleration += .0025;
-        }
-    }
-
-    function moveTo() {
-        gravity = gravConst*((massShip*massEarth)/Math.pow((radEarth + spec.center.y),2));
-        if(acceleration >= minAccel){
-            acceleration -= gravity;
-        }
-        spec.speed.x = velocity.x + acceleration*Math.sin(spec.angle);
-        spec.speed.y = velocity.y - acceleration*Math.cos(spec.angle);
-
-        velocity.x = spec.speed.x;
-        velocity.y = spec.speed.y;
-
-        spec.center.x += velocity.x;
-        spec.center.y += velocity.y;
-
+        spec.velocity.x += acceleration * Math.sin(-spec.angle);
+        spec.velocity.y += acceleration * Math.cos(spec.angle);
+        acceleration +=.0001;
     }
 
     function updatePosition(){
-        gravity = gravConst*((massShip*massEarth)/Math.pow((radEarth + spec.center.y),2));
-
-        velocity.y += gravity;
-        spec.center.y += spec.speed.y;
-        moveTo();
+        //velocity.y += gravity;
+        spec.center.x += spec.velocity.x;
+        spec.center.y += spec.velocity.y;
+        
+        spec.velocity.y -= gravity;
+        acceleration -=.0001;
     }
 
     function reset(){
-        spec.angle = 0;
+        spec.angle = Math.PI/2;
         spec.center = { x: location.x, y: location.y };
-        spec.speed = {x: 0, y: 0};
-        acceleration = gravity;
-        velocity = {x: gravity, y: gravity};
+        acceleration = 0;
+        spec.velocity = {x: 0, y: 0};
     }
 
     function getCenter(){
@@ -123,7 +107,7 @@ LunarLander.objects.Lander = function(spec) {
         get image() { return image; },
         get center() { return spec.center; },
         get size() { return spec.size; },
-        get speed() { return spec.speed },
+        get velocity() { return spec.velocity },
     };
 
     return api;
