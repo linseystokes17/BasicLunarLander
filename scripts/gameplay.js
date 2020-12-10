@@ -94,8 +94,6 @@ LunarLander.screens['game-play'] = (function(game, objects, renderer, graphics, 
             // Then, return to the main menu
             game.showScreen('main-menu');
         });
-
-        let canvas = document.getElementById('id-canvas');
     }
 
     function run() {
