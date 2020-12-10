@@ -12,9 +12,9 @@ LunarLander.screens['main-menu'] = (function(game) {
             'click',
             function() { game.showScreen('high-scores'); });
         
-        document.getElementById('id-help').addEventListener(
+        document.getElementById('id-settings').addEventListener(
             'click',
-            function() { game.showScreen('help'); });
+            function() { game.showScreen('settings'); });
         
         document.getElementById('id-about').addEventListener(
             'click',

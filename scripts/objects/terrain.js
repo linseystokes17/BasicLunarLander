@@ -1,92 +1,98 @@
 LunarLander.objects.Terrain = function(spec) {
     'use strict';
-    var depth = 0;
-    let points = [];
-    let gauss = randGauss(10);
+    let smallestSplit = 6;
+    let rough = .4;
+    
+    let w15 = spec.canv.width*.15;
+    let startX1 = randomIntFromInterval(w15, spec.canv.width/2);
+    let endX1 = startX1 + 100;
+    let Y1 = randomIntFromInterval(spec.canv.height/2, spec.canv.height);    
+    let startX2 = randomIntFromInterval(spec.canv.width/2, spec.canv.width-w15-100);
+    let endX2 = startX2 + 100;
+    let Y2 = randomIntFromInterval(spec.canv.height/2, spec.canv.height);
+    let p0 = {x:0 , y: randomIntFromInterval(spec.canv.height/2, spec.canv.height)};
+    let p1 = {x:startX1, y: Y1};
+    let p2 = {x:endX1, y: Y1};
+    let p3 = {x:startX2, y: Y2};
+    let p4 = {x:endX2, y: Y2};
+    let p5 = {x:spec.canv.width, y: randomIntFromInterval(spec.canv.height/2, spec.canv.height)};
 
-    function initialize(){
-        let randStartY = spec.canv.height+10 - Math.floor(Math.random()*spec.canv.height/2)-10;
-        let randSafeX = Math.round(spec.canv.width*.15) + Math.floor(Math.random()*(spec.canv.width-2*Math.round(spec.canv.width*.15)));
-        let randSafeY = spec.canv.height+10 - Math.floor(Math.random()*spec.canv.height/2)-10;
-        points = [];
-        let terrain = {
-            startPoint: {
-                x: 0,
-                y: randStartY,
-            },
-            endPoint: {
-                x: spec.canv.width,
-                y: randStartY
-            },
-            safeZoneStart: {
-                x: randSafeX,
-                y: randSafeY 
-            },
-            safeZoneEnd: {
-                x: randSafeX + 100,
-                y: randSafeY
-            },
-        };
+    function reset(){
+        spec.points = [];
+    }
 
-        points.push(terrain.startPoint, terrain.endPoint, terrain.safeZoneStart, terrain.safeZoneEnd);
-        genTerrain(terrain.startPoint, terrain.safeZoneStart, spec.bumpiness, depth);
-        genTerrain(terrain.safeZoneEnd, terrain.endPoint,  spec.bumpiness, depth);
+    function randomIntFromInterval(min, max) { // min and max included 
+        return Math.floor(Math.random() * (max - min + 1) + min);
+      }
 
-        points.sort(function(a,b){
+    function generateTerrain(numPlatforms, platformWidth){
+        startX1 = randomIntFromInterval(w15, spec.canv.width/2);
+        endX1 = startX1 + platformWidth;
+        Y1 = randomIntFromInterval(spec.canv.height/2, spec.canv.height);
+        if (numPlatforms == 2){
+            startX2 = randomIntFromInterval(spec.canv.width/2, spec.canv.width-w15-platformWidth);
+            endX2 = startX2 + platformWidth;
+            Y2 = randomIntFromInterval(spec.canv.height/2, spec.canv.height);
+            p3 = {x:startX2, y: Y2};
+            p4 = {x:endX2, y: Y2};
+            spec.points.push(p3,p4);
+        }
+
+
+        p0 = {x:0 , y: randomIntFromInterval(spec.canv.height/2, spec.canv.height)};
+        p1 = {x:startX1, y: Y1};
+        p2 = {x:endX1, y: Y1};
+        p5 = {x:spec.canv.width, y: randomIntFromInterval(spec.canv.height/2, spec.canv.height)};
+
+        spec.points.push(p0,p1,p2,p5);
+
+        if (numPlatforms == 1){
+            randomMidDisplace(p0, p1);
+            randomMidDisplace(p2, p5);
+        }
+        else if (numPlatforms == 2){
+            randomMidDisplace(p0, p1);
+            randomMidDisplace(p2, p3);
+            randomMidDisplace(p4, p5);
+        }
+
+        spec.points.sort((a,b)=>{
             return a.x - b.x;
-        });
-        spec.points = points;
-        spec.pointsLen = points.length;
+        });        
     }
 
-    function genTerrain(start, end, bumpiness, depth){
-        let midpoint = {
-            x: (end.x - start.x)/2+start.x,
-            y: start.y,
+    function randomMidDisplace(pt1, pt2){
+        //console.log(Math.abs(p2.x - p1.x));
+        var p = {x: 0, y:0};
+        var r = rough*Math.random()*Math.abs(pt2.x - pt1.x);
+        p.x = pt2.x - (Math.abs(pt2.x - pt1.x) / 2);
+        p.y = .5*(pt1.y+pt2.y) + r;
+        while (p.y > spec.canv.height){
+            r = rough*Math.random()*Math.abs(pt2.x - pt1.x)
+            p.y = .5*(pt1.y+pt2.y) + r
         }
-
-        let r = bumpiness * gauss *(Math.abs(end.x - start.x));
-        midpoint.y = .5*(start.y + end.y) + r-100;
-        let x = Math.abs(end.x - start.x)/2;
-    
-        if(depth < 5){
-            points.push(midpoint);
-            depth=depth+1;
-            genTerrain(start, midpoint, bumpiness,depth); 
-            genTerrain(midpoint, end, bumpiness, depth);   
+        
+        if (Math.abs(p.x-pt1.x)<=smallestSplit/2 || Math.round(p.x)==Math.round(pt1.x) || Math.round(pt2.x)==Math.round(p.x)) {
+            return;
         }
-        // console.log("midpoint.y: " + midpoint.y);
-        // console.log("start.y: " + start.y);
-        // console.log("end.y: " + end.y);
+        if(p!=undefined){
+            spec.points.push(p);
+            randomMidDisplace(pt1, p);
+            randomMidDisplace(p, pt2);
+        }
     }
-
-
-    function randGauss(v){
-        var r= 0;
-        for( var i = v; i>0;i--){
-            r+=Math.random();
-        }
-        return r/v;
-    }
-
-    
-
-    // function printPoints(){
-    //     for (var i=0; i<points.length-1; i++){
-    //         graphics.drawLineSegment(points[i],points[i+1]);
-    //     }
-    // }
 
     let api = {
-        initialize: initialize,
+        generateTerrain: generateTerrain,
+        reset: reset,
         get pointsLen() { return spec.pointsLen; },
         get points() { return spec.points; },
         get bumpiness() { return spec.bumpiness; },
-        get safeZoneWidth() { return terrain.safeZoneWidth; },
+        get platformWidth() { return terrain.platformWidth; },
         get startPoint() { return terrain.startPoint; },
         get endPoint() { return terrain.endPoint; },
-        get safeZoneStart() { return terrain.safeZoneStart; },
-        get safeZoneEnd() { return terrain.safeZoneEnd },
+        get platformStart() { return terrain.platformStart; },
+        get platformEnd() { return terrain.platformEnd },
     };
 
     return api;

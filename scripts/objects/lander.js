@@ -31,18 +31,26 @@ LunarLander.objects.Lander = function(spec) {
     image.src = spec.imageSrc;
 
     function rotateLeft(elapsedTime) {
-        spec.angle -= Math.PI / 180;
+        if(spec.fuel > 0){
+            spec.angle -= Math.PI / 180;
+            spec.fuel -= .01;
+        }
     }
 
     function rotateRight(elapsedTime) {
-        spec.angle += Math.PI/180;
+        if(spec.fuel > 0){
+            spec.angle += Math.PI/180;
+            spec.fuel -= .01;
+        }
     }
 
     function accelerate(elapsedTime){
-        spec.thrust -= .01;
-        spec.velocity.x += spec.thrust * Math.sin(-spec.angle);
-        spec.velocity.y += spec.thrust * Math.cos(spec.angle);
-        console.log(spec.thrust);
+        if(spec.fuel > 0){
+            spec.thrust -= .002;
+            spec.fuel -= .05;
+            spec.velocity.x += spec.thrust * Math.sin(-spec.angle);
+            spec.velocity.y += spec.thrust * Math.cos(spec.angle);
+        }
 
     }
 
@@ -55,14 +63,13 @@ LunarLander.objects.Lander = function(spec) {
         if (spec.thrust < gravity){
             spec.thrust -= gravity;
         }
-
-        console.log(spec.thrust);
     }
 
     function reset(){
         spec.angle = Math.PI/2;
         spec.center = { x: location.x, y: location.y };
         spec.velocity = {x: 0, y: 0};
+        spec.fuel = 20;
     }
 
     function getCenter(){
@@ -108,6 +115,7 @@ LunarLander.objects.Lander = function(spec) {
         get center() { return spec.center; },
         get size() { return spec.size; },
         get velocity() { return spec.velocity },
+        get fuel() {return spec.fuel},
     };
 
     return api;
