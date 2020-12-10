@@ -39,10 +39,9 @@ LunarLander.objects.Lander = function(spec) {
     }
 
     function accelerate(elapsedTime){
-        spec.thrust -= .01;
+        spec.thrust -= .003;
         spec.velocity.x += spec.thrust * Math.sin(-spec.angle);
         spec.velocity.y += spec.thrust * Math.cos(spec.angle);
-        console.log(spec.thrust);
 
     }
 
@@ -55,8 +54,6 @@ LunarLander.objects.Lander = function(spec) {
         if (spec.thrust < gravity){
             spec.thrust -= gravity;
         }
-
-        console.log(spec.thrust);
     }
 
     function reset(){

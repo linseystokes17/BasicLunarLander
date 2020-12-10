@@ -5,24 +5,8 @@ LunarLander.screens['game-play'] = (function(game, objects, renderer, graphics, 
     let cancelNextRequest = true;
     let myKeyboard = input.Keyboard();
 
-    let myLander = objects.Lander({
-        imageSrc: 'assets/lander.png',
-        center: { x: graphics.canvas.width / 2, y: 100 },
-        size: { width: 15, height: 30 },
-        velocity: {x: 0, y: 0},
-        angle: Math.PI/2,
-        thrust: 0,
-    });
-
-    let myTerrain = objects.Terrain({
-        bumpiness: .5,
-        safeZoneWidth: 100,
-        pointsLen: 0,
-        points: [],
-        canv: {
-            height: graphics.canvas.height, 
-            width:graphics.canvas.width},
-    });
+    let myLander;
+    let myTerrain;
 
     function processInput(elapsedTime) {
         myKeyboard.update(elapsedTime);
@@ -37,12 +21,6 @@ LunarLander.screens['game-play'] = (function(game, objects, renderer, graphics, 
 
                 cancelNextRequest = true;
                 myLander.reset();
-                myTerrain.initialize();
-                // myLander.center.x = graphics.canvas.width / 2;
-                // myLander.center.y = graphics.canvas.height / 2;
-                // myLander.angle = 0;
-                //
-                // Then, return to the main menu
                 game.showScreen('main-menu');
             }
         }
@@ -51,9 +29,9 @@ LunarLander.screens['game-play'] = (function(game, objects, renderer, graphics, 
 
     function render() {
         graphics.clear();
-        renderer.Lander.render(myLander);
         graphics.label(myLander.velocity, myLander.angle);
         renderer.Terrain.render(myTerrain);
+        renderer.Lander.render(myLander);
     }
 
     function gameLoop(time) {
@@ -63,6 +41,7 @@ LunarLander.screens['game-play'] = (function(game, objects, renderer, graphics, 
         processInput(elapsedTime);
         update(elapsedTime);
         render();
+        console.log(myTerrain.points);
 
         if (!cancelNextRequest) {
             requestAnimationFrame(gameLoop);
@@ -70,19 +49,32 @@ LunarLander.screens['game-play'] = (function(game, objects, renderer, graphics, 
     }
 
     function initialize() {
-        myTerrain.initialize();
-        myKeyboard.register('w', myLander.accelerate);
-        myKeyboard.register('a', myLander.rotateLeft);
-        myKeyboard.register('d', myLander.rotateRight);
+        myLander = objects.Lander({
+            imageSrc: 'assets/lander.png',
+            center: { x: graphics.canvas.width / 2, y: 100 },
+            size: { width: 15, height: 30 },
+            velocity: {x: 0, y: 0},
+            angle: Math.PI/2,
+            thrust: 0,
+        });
+
+        myTerrain = objects.Terrain({
+            bumpiness: .5,
+            points: [],
+            canv: {
+                height: graphics.canvas.height, 
+                width:graphics.canvas.width},
+        });
+
+        myKeyboard.register('ArrowUp', myLander.accelerate);
+        myKeyboard.register('ArrowLeft', myLander.rotateLeft);
+        myKeyboard.register('ArrowRight', myLander.rotateRight);
         myKeyboard.register('Escape', function() {
             //
             // Stop the game loop by canceling the request for the next animation frame
             cancelNextRequest = true;
             myLander.reset();
-            myTerrain.initialize();
-            // myLander.center.x = graphics.canvas.width / 2;
-            // myLander.center.y = graphics.canvas.height / 2;
-            // myLander.angle = 0;
+            myTerrain.generateTerrain(1, 100);
             //
             // Then, return to the main menu
             game.showScreen('main-menu');

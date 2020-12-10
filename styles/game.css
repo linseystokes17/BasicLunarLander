@@ -81,6 +81,7 @@ ul.menu li button:active {
     font-size: 0.5em;
 }
 
-#about p {
+#settings {
     text-align: center;
+    font-size: 0.8em;
 }

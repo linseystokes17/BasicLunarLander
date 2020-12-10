@@ -1,63 +1,86 @@
 LunarLander.objects.Terrain = function(spec) {
     'use strict';
     var depth = 0;
-    let points = [];
     let gauss = randGauss(10);
 
-    function initialize(){
+    function generateTerrain(numPlatforms, platformWidth){
+        let platform = 0;
         let randStartY = spec.canv.height+10 - Math.floor(Math.random()*spec.canv.height/2)-10;
-        let randSafeX = Math.round(spec.canv.width*.15) + Math.floor(Math.random()*(spec.canv.width-2*Math.round(spec.canv.width*.15)));
-        let randSafeY = spec.canv.height+10 - Math.floor(Math.random()*spec.canv.height/2)-10;
-        points = [];
-        let terrain = {
-            startPoint: {
-                x: 0,
-                y: randStartY,
-            },
-            endPoint: {
-                x: spec.canv.width,
-                y: randStartY
-            },
-            safeZoneStart: {
-                x: randSafeX,
-                y: randSafeY 
-            },
-            safeZoneEnd: {
-                x: randSafeX + 100,
-                y: randSafeY
-            },
+        let d = 0;
+        let start = {
+            x: 0,
+            y: randStartY,
+        };
+        let end = {
+            x: spec.canv.width,
+            y: randStartY,
         };
 
-        points.push(terrain.startPoint, terrain.endPoint, terrain.safeZoneStart, terrain.safeZoneEnd);
-        genTerrain(terrain.startPoint, terrain.safeZoneStart, spec.bumpiness, depth);
-        genTerrain(terrain.safeZoneEnd, terrain.endPoint,  spec.bumpiness, depth);
+        spec.points.push(start, end);
 
-        points.sort(function(a,b){
+        while (platform < numPlatforms){
+            let randSafeX = Math.round(spec.canv.width*.15) + Math.floor(Math.random()*(spec.canv.width-2*Math.round(spec.canv.width*.15)));
+            let randSafeY = spec.canv.height+10 - Math.floor(Math.random()*spec.canv.height/2)-10;
+            
+            let safeStart = {
+                x: randSafeX,
+                y: randSafeY,
+            };
+            let safeEnd = {
+                x: randSafeX+platformWidth,
+                y: randSafeY,
+            };
+
+            spec.points.push(safeStart, safeEnd);
+
+            platform++;
+        }
+        
+        spec.points.sort(function(a,b){
             return a.x - b.x;
         });
-        spec.points = points;
-        spec.pointsLen = points.length;
+
+        let l = spec.points.length;
+
+        while (d < spec.density){
+            for (var i=0; i<=l/2; i+=2){
+                let fromFront = {
+                    first: spec.points[i],
+                    second: spec.points[i+1]
+                };
+                let fromBack = {
+                    first: spec.points[l-i-2],
+                    second: spec.points[l-i-1]
+                }
+                let midH1 = genMidpoint(fromFront.first, fromFront.second);
+                let midH2 = genMidpoint(fromBack.first, fromBack.second);
+                
+                console.log(midH1);
+                console.log(midH2);
+                
+                spec.points.push(midH1);
+                spec.points.push(midH2);
+            }
+            spec.points.sort(function(a,b){
+                return a.x - b.x;
+            });
+            d++;
+        }  
     }
 
-    function genTerrain(start, end, bumpiness, depth){
+    function genMidpoint(start, end){
+        //console.log(start);
+        
         let midpoint = {
             x: (end.x - start.x)/2+start.x,
             y: start.y,
         }
 
-        let r = bumpiness * gauss *(Math.abs(end.x - start.x));
+        let r = spec.bumpiness * gauss *(Math.abs(end.x - start.x));
         midpoint.y = .5*(start.y + end.y) + r-100;
         let x = Math.abs(end.x - start.x)/2;
-    
-        if(depth < 5){
-            points.push(midpoint);
-            depth=depth+1;
-            genTerrain(start, midpoint, bumpiness,depth); 
-            genTerrain(midpoint, end, bumpiness, depth);   
-        }
-        // console.log("midpoint.y: " + midpoint.y);
-        // console.log("start.y: " + start.y);
-        // console.log("end.y: " + end.y);
+
+        return midpoint
     }
 
 
@@ -69,24 +92,16 @@ LunarLander.objects.Terrain = function(spec) {
         return r/v;
     }
 
-    
-
-    // function printPoints(){
-    //     for (var i=0; i<points.length-1; i++){
-    //         graphics.drawLineSegment(points[i],points[i+1]);
-    //     }
-    // }
-
     let api = {
-        initialize: initialize,
+        generateTerrain: generateTerrain,
         get pointsLen() { return spec.pointsLen; },
         get points() { return spec.points; },
         get bumpiness() { return spec.bumpiness; },
-        get safeZoneWidth() { return terrain.safeZoneWidth; },
+        get platformWidth() { return terrain.platformWidth; },
         get startPoint() { return terrain.startPoint; },
         get endPoint() { return terrain.endPoint; },
-        get safeZoneStart() { return terrain.safeZoneStart; },
-        get safeZoneEnd() { return terrain.safeZoneEnd },
+        get platformStart() { return terrain.platformStart; },
+        get platformEnd() { return terrain.platformEnd },
     };
 
     return api;

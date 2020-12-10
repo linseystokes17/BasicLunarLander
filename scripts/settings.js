@@ -1,8 +1,10 @@
-LunarLander.screens['help'] = (function(game) {
+LunarLander.screens['settings'] = (function(game, input) {
     'use strict';
     
     function initialize() {
-        document.getElementById('id-help-back').addEventListener(
+
+
+        document.getElementById('id-settings-back').addEventListener(
             'click',
             function() { game.showScreen('main-menu'); });
     }
@@ -16,4 +18,4 @@ LunarLander.screens['help'] = (function(game) {
         initialize : initialize,
         run : run
     };
-}(LunarLander.game));
+}(LunarLander.game, LunarLander.input));

@@ -13,7 +13,7 @@ LunarLander.render.Terrain = (function(graphics) {
     'use strict';
 
     function render(spec) {
-        graphics.drawTerrain(spec.points, spec.pointsLen);
+        graphics.drawTerrain(spec.points, spec.points.length);
     }
 
     return {
