@@ -8,7 +8,7 @@ LunarLander.graphics = (function() {
         context.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    function label(velocity, angle){
+    function label(fuel, velocity, angle){
         let angleMax = 355;
         let angleMin = 5;
         let speedMax = .3
@@ -16,14 +16,24 @@ LunarLander.graphics = (function() {
         context.font = '20px Calibri';
         let inc = 20;
 
+        if (fuel > 0){
+            context.fillStyle = 'white';
+            context.fillText("fuel: " + fuel, 0, inc);
+        }
+        else if (fuel <= 0){
+            context.fillStyle = 'red';
+            context.fillText("fuel: " + fuel, 0, inc);
+        }
+
         if (velocity.y >= speedMax){
             context.fillStyle = 'white';
-            context.fillText("velocity: " + velocity.y + " m/s", 0, inc*2 );
+            context.fillText("velocity: " + Math.floor(velocity.y*10) + " m/s", 0, inc*2 );
         }
         else if (velocity.y < speedMax){
             context.fillStyle = 'green';
-            context.fillText("velocity: " + velocity.y + " m/s", 0, inc*2);
+            context.fillText("velocity: " + Math.floor(velocity.y*10) + " m/s", 0, inc*2);
         }
+        
         if (degrees <= angleMin || degrees >= angleMax){
             context.fillStyle = 'green';
             context.fillText("Angle: " + (degrees), 0, inc*3);
