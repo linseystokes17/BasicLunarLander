@@ -27,6 +27,14 @@ body {
     display: block;
 }
 
+#high-scores {
+    font-family: Arial, sans-serif;
+    font-size: 0.8em;
+    color: #CECEF6;
+    text-align: center;
+
+}
+
 #main-menu {
     padding-top: 1em;
     cursor: pointer;
