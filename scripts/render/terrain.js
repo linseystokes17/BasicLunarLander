@@ -9,7 +9,7 @@
 // }
 //
 // --------------------------------------------------------------
-LunarLander.render.Terrain = (function(graphics) {
+LunarLander.renderer.Terrain = (function(graphics) {
     'use strict';
 
     function render(spec) {

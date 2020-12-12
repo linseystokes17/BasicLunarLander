@@ -26,6 +26,10 @@ LunarLander.input.Keyboard = function () {
         that.handlers[key] = handler;
     };
 
+    that.unregister = function(key, handler){
+        that.handlers[key] = null;
+    }
+
     window.addEventListener('keydown', keyPress);
     window.addEventListener('keyup', keyRelease);
 

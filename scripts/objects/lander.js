@@ -20,10 +20,12 @@ LunarLander.objects.Lander = function(spec) {
     let radEarth = 6378000 //m
     let shipDistCenter =  radEarth + spec.center.y;
     let gravity = -gravConst*((massShip*massEarth)/Math.pow(shipDistCenter,2));
-    let imageReady = false;
-    let image = new Image();
+    
     let location = {x: spec.center.x, y: spec.center.y};
     let radius = 8.5;
+
+    let imageReady = false;
+    let image = new Image();
     
     image.onload = function() {
         imageReady = true;

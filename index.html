@@ -21,12 +21,9 @@
         </div>
         <div id = "high-scores" class = "screen">
             <h1>High Scores</h1>
-            <ol>
-                <li>10000</li>
-                <li>9000</li>
-                <li>8000</li>
-                <li>7000</li>
-            </ol>
+            <ol id = "high-scores-list">
+				<li>7000</li>
+			</ol>
             <ul class = "menu">
                 <li><button id = "id-high-scores-back">Back</button></li>
             </ul>
@@ -55,21 +52,30 @@
             screens : {},
             input: {},
             objects: {},
-            render: []
+            renderer: [],
+            model: {},
         };
     </script>
     <script src = "scripts/objects/lander.js"></script>
     <script src = "scripts/objects/terrain.js"></script>
+    <script src = "scripts/objects/highscores.js"></script>
+    <script src = "scripts/objects/particleSystem.js"></script>
+    <script src = "scripts/objects/createEffectExplosion.js"></script>
+    <script src = "scripts/objects/effectFire.js"></script>
     <script src = "scripts/render/core.js"></script>
+    <script src = "scripts/render/particleSystem.js"></script>
     <script src = "scripts/render/lander.js"></script>
     <script src = "scripts/render/terrain.js"></script>
     <script src = "scripts/input-keyboard.js"></script>
+    <script src = "scripts/model.js"></script>
+    <script src = "scripts/random.js"></script>
     <script src = "scripts/game.js"></script>
     <script src = "scripts/mainmenu.js"></script>
     <script src = "scripts/gameplay.js"></script>
     <script src = "scripts/highscores.js"></script>
     <script src = "scripts/settings.js"></script>
     <script src = "scripts/about.js"></script>
+    
 
 </body>
 </html>
